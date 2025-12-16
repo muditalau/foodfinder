@@ -1,22 +1,12 @@
 import { getPlaces } from "./api.js";
+import { initMap, addMarker } from "./map.js";
 
-const map = L.map('map').setView([-6.2, 106.8], 6);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap'
-}).addTo(map);
+const map = initMap();
 
 getPlaces().then(places => {
   places.forEach(place => {
 
-    const marker = L.marker([place.lat, place.lng])
-      .addTo(map)
-      .bindPopup(`
-        <strong>${place.name}</strong><br>
-        ${place.city}<br>
-        ${place.tags.join(', ')}<br>
-        ${place.note || ''}
-      `);
+    const marker = addMarker(map, place);
 
     const item = document.createElement('div');
     item.className = 'list-item';
