@@ -29,21 +29,32 @@
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-  <script>
-    // Init map
-    const map = L.map('map').setView([-6.2, 106.8], 12);
+<script>
+  const map = L.map('map').setView([-6.2, 106.8], 6);
 
-    // Base map
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap'
-    }).addTo(map);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(map);
 
-    // Marker dummy
-    L.marker([-6.2, 106.8])
-      .addTo(map)
-      .bindPopup('Halo, Food Finder 🍜')
-      .openPopup();
-  </script>
+  fetch('data/places.json')
+    .then(response => response.json())
+    .then(places => {
+      places.forEach(place => {
+        L.marker([place.lat, place.lng])
+          .addTo(map)
+          .bindPopup(`
+            <strong>${place.name}</strong><br>
+            ${place.city}<br>
+            ${place.tags.join(', ')}<br>
+            ${place.note || ''}
+          `);
+      });
+    })
+    .catch(err => {
+      console.error('Error loading places:', err);
+    });
+</script>
+
 
 </body>
 </html>
