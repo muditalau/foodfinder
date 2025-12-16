@@ -1,5 +1,6 @@
 import { getPlaces } from "./api.js";
 import { initMap, addMarker } from "./map.js";
+import { addListItem } from "./list.js";
 
 const map = initMap();
 
@@ -8,18 +9,7 @@ getPlaces().then(places => {
 
     const marker = addMarker(map, place);
 
-    const item = document.createElement('div');
-    item.className = 'list-item';
-    item.innerHTML = `
-      <strong>${place.name}</strong><br>
-      <small>${place.city} • ${place.price}</small>
-    `;
+addListItem(place, marker, map);
 
-    item.onclick = () => {
-      map.setView([place.lat, place.lng], 15);
-      marker.openPopup();
-    };
-
-    document.getElementById('list').appendChild(item);
   });
 });
