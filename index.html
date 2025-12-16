@@ -11,50 +11,90 @@
   />
 
   <style>
-    html, body {
-      margin: 0;
-      height: 100%;
-    }
+#app {
+  display: flex;
+  height: 100vh;
+}
 
-    #map {
-      height: 100vh;
-      width: 100vw;
-    }
+#list {
+  width: 320px;
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
+  padding: 10px;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+#map {
+  flex: 1;
+}
+
+.list-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.list-item:hover {
+  background: #f5f5f5;
+}
+
   </style>
 </head>
 <body>
 
-  <div id="map"></div>
+  <div id="app">
+    <div id="list"></div>
+    <div id="map"></div>
+  </div>
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-<script>
-  const map = L.map('map').setView([-6.2, 106.8], 6);
+  <script>
+    const map = L.map('map').setView([-6.2, 106.8], 6);
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap'
-  }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
 
-  fetch('data/places.json')
-    .then(response => response.json())
-    .then(places => {
-      places.forEach(place => {
-        L.marker([place.lat, place.lng])
-          .addTo(map)
-          .bindPopup(`
+    const markers = [];
+
+    fetch('data/places.json')
+      .then(res => res.json())
+      .then(places => {
+        places.forEach(place => {
+
+          // Marker
+          const marker = L.marker([place.lat, place.lng])
+            .addTo(map)
+            .bindPopup(`
+              <strong>${place.name}</strong><br>
+              ${place.city}<br>
+              ${place.tags.join(', ')}<br>
+              ${place.note || ''}
+            `);
+
+          markers.push({ id: place.id, marker });
+
+          // List item
+          const item = document.createElement('div');
+          item.className = 'list-item';
+          item.innerHTML = `
             <strong>${place.name}</strong><br>
-            ${place.city}<br>
-            ${place.tags.join(', ')}<br>
-            ${place.note || ''}
-          `);
-      });
-    })
-    .catch(err => {
-      console.error('Error loading places:', err);
-    });
-</script>
+            <small>${place.city} • ${place.price}</small>
+          `;
 
+          item.onclick = () => {
+            map.setView([place.lat, place.lng], 15);
+            marker.openPopup();
+          };
+
+          document.getElementById('list').appendChild(item);
+        });
+      });
+  </script>
 
 </body>
+
 </html>
