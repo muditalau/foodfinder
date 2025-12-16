@@ -1,0 +1,32 @@
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
+#app {
+  display: flex;
+  height: 100vh;
+}
+
+#list {
+  width: 320px;
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
+  padding: 10px;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+#map {
+  flex: 1;
+}
+
+.list-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.list-item:hover {
+  background: #f5f5f5;
+}
