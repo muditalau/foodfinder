@@ -22,6 +22,8 @@ document.getElementById('findBtn').onclick = () => {
   const userLat = parseFloat(document.getElementById('userLat').value);
   const userLng = parseFloat(document.getElementById('userLng').value);
 
+    console.log("User location:", userLat, userLng);
+  
   if (isNaN(userLat) || isNaN(userLng)) {
     alert("Please enter valid coordinates");
     return;
